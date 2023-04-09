@@ -1,16 +1,12 @@
 import React from 'react';
 import './App.css';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
+import ContactForm from './ContactForm';
 
 function App() {
-  const [name, setName] = React.useState('');
-  const [email, setEmail] = React.useState('');
-  const [message, setMessage] = React.useState('');
   const [isSent, setIsSent] = React.useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Name:', name, 'Email:', email, 'Message:', message);
+  const handleSent = () => {
     setIsSent(true);
   }
 
@@ -21,8 +17,8 @@ function App() {
         <p>Welcome to my personal website!</p>
         <nav>
           <ul>
-            <li><a href="https://github.com/janedoe"><FaGithub /></a></li>
-            <li><a href="https://linkedin.com/in/janedoe"><FaLinkedin /></a></li>
+            <li><a href="https://github.com/IamIan1"><FaGithub /></a></li>
+            <li><a href="https://linkedin.com/in/Ian-Sabolik"><FaLinkedin /></a></li>
           </ul>
         </nav>
       </header>
@@ -33,22 +29,7 @@ function App() {
         </section>
         <section>
           <h2>Contact Me</h2>
-          {isSent ? <p>Thank you for your message!</p> :
-          <form onSubmit={handleSubmit}>
-            <label>
-              Name:
-              <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
-            </label>
-            <label>
-              Email:
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-            </label>
-            <label>
-              Message:
-              <textarea value={message} onChange={(e) => setMessage(e.target.value)}></textarea>
-            </label>
-            <button type="submit">Send</button>
-          </form>}
+          {isSent ? <p>Thank you for your message!</p> : <ContactForm onSent={handleSent} />}
         </section>
       </main>
       <footer>

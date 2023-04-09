@@ -5,6 +5,43 @@ require('dotenv').config();
 const cors = require('cors');
 const app = express();
 
+
+////////////////// Contact Me Backend ///////////////////////////////
+const nodemailer = require('nodemailer');
+
+// Endpoint to handle contact form submissions
+app.post('/api/contact', (req, res) => {
+  const { name, email, message } = req.body;
+  
+  // Use nodemailer to send email
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'iamian100gaming@gmail.com',
+      pass: process.env.GAMING_GMAIL_PW
+    }
+  });
+
+  const mailOptions = {
+    from: email,
+    to: 'iamian100gaming@gmail.com',
+    subject: `New message from ${name}`,
+    text: message
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log(error);
+      res.status(500).send('Error: message not sent'+name+email+message);
+    } else {
+      console.log('Email sent: ' + info.response);
+      res.send('Message sent');
+    }
+  });
+});
+
+
+////////////////////// MySQL Connection ///////////////////////////
 app.use(cors());
 
 app.use((req, res, next) => {
