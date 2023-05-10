@@ -5,9 +5,18 @@ import ContactForm from './ContactForm';
 
 function App() {
   const [isSent, setIsSent] = React.useState(false);
+  const [setIsLoading] = React.useState(false);
 
-  const handleSent = () => {
+
+  const handleSent = async (e) => {
+    e.preventDefault();
     setIsSent(true);
+    setIsLoading(false);
+
+    // Delay sending the email for 2 seconds
+    setTimeout(() => {
+      setIsLoading(true);
+    }, 2000);
   }
 
   return (

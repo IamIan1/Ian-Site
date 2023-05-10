@@ -8,41 +8,48 @@ const app = express();
 
 ////////////////// Contact Me Backend ///////////////////////////////
 const nodemailer = require('nodemailer');
+const bodyParser = require('body-parser');
 
-// Endpoint to handle contact form submissions
-app.post('/api/contact', (req, res) => {
+// Allow requests from only the specified origin
+app.use(cors());
+
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// parse application/json
+app.use(bodyParser.json());
+
+app.post('/api/contact', async (req, res) => {
   const { name, email, message } = req.body;
-  
-  // Use nodemailer to send email
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: 'iamian100gaming@gmail.com',
-      pass: process.env.GAMING_GMAIL_PW
-    }
-  });
 
-  const mailOptions = {
-    from: email,
-    to: 'iamian100gaming@gmail.com',
-    subject: `New message from ${name}`,
-    text: message
-  };
+  try {
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false,
+      auth: {
+        user: 'iamian100gaming@gmail.com',
+        pass: process.env.GMAIL_PW
+      },
+    });
 
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log(error);
-      res.status(500).send('Error: message not sent'+name+email+message);
-    } else {
-      console.log('Email sent: ' + info.response);
-      res.send('Message sent');
-    }
-  });
+    const info = await transporter.sendMail({
+      from: '"IanSite" iamian100gaming@gmail.com',
+      to: 'iansabolik@gmail.com',
+      subject: 'New message from website contact form',
+      text: `${name} (${email}) says: ${message}`,
+    });
+
+    console.log('Message sent:', info.messageId);
+    res.status(200).send('Message sent');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error0: message not sent');
+  }
 });
 
 
+
 ////////////////////// MySQL Connection ///////////////////////////
-app.use(cors());
 
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');

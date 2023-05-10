@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const ContactForm = () => {
+const validateEmail = (email) => {
+  // Email validation regular expression
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+const ContactForm = ({ onSent }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
@@ -10,17 +16,29 @@ const ContactForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    if (!validateEmail(email)) {
+      setStatus('Please enter a valid email address');
+      return;
+    }
+
     try {
-      await axios.post('/api/contact', {
+      await axios.post('http://localhost:5000/api/contact', {
         name,
         email,
         message
       });
 
       setStatus('Message sent');
+      setName('');
+      setEmail('');
+      setMessage('');
+
+      if (typeof onSent === 'function') {
+        onSent();
+      }
     } catch (error) {
       console.error(error);
-      setStatus('Error: message not sent'+name);
+      setStatus('Error: message not sent');
     }
   };
 
